@@ -5,13 +5,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.PriorityQueue;
 public class main {
     // Pour l'instant l'input sera sous forme de HAUTEUR LARGEUR v1 V2
     public static void main(String[] args) {
 
 
-        Vector2 vertical= new Vector2(0,4);
+        Vector2 vertical= new Vector2(0,16);
         Vector2 horizontal = new Vector2(10,0);
         int poidVertical= 1;
         int poidHorizontal=1;
@@ -131,7 +133,57 @@ public class main {
             }
         }
 
+
+        ArrayDeque<Point> deque = new ArrayDeque<>();
+        for(int i=0;i<nbPointLargueur;i++){
+            for(int y=0;y<nbPointHauteur;y++){
+                deque.add(points[i][y]);
+            }
+        }
+
+        int compteur=0;
+        while(!deque.isEmpty()&&compteur<determinent){
+            tmp=deque.poll();
+            if(tmp.x<nbPointLargueur-1){
+                if(Math.abs(points[(int) tmp.x+1][(int) tmp.y].hauteur-tmp.hauteur)==3){
+                    doms[compteur]=new Domino(new Point(tmp.x, tmp.y-1),new Point(tmp.x+1,tmp.y+1));
+                    deque.remove(points[(int) tmp.x+1][(int) tmp.y]);
+                    compteur++;
+                }
+            }
+
+
+            if(tmp.x>0){
+                if(Math.abs(points[(int) tmp.x-1][(int) tmp.y].hauteur-tmp.hauteur)==3){
+                    doms[compteur]=new Domino(new Point(tmp.x, tmp.y+1),new Point(tmp.x-1,tmp.y-1));
+                    deque.remove(points[(int) tmp.x-1][(int) tmp.y]);
+                    compteur++;
+                }
+            }
+
+            if(tmp.y<nbPointHauteur-1) {
+                if (Math.abs(points[(int) tmp.x][(int) tmp.y + 1].hauteur - tmp.hauteur) == 3) {
+                    doms[compteur] = new Domino(new Point(tmp.x - 1, tmp.y), new Point(tmp.x + 1, tmp.y + 1));
+                    deque.remove(points[(int) tmp.x][(int) tmp.y+1]);
+                    compteur++;
+
+                }
+            }
+
+            if(tmp.y>0){
+                if(Math.abs(points[(int) tmp.x][(int) tmp.y-1].hauteur-tmp.hauteur)==3){
+                    doms[compteur]=new Domino(new Point(tmp.x+1, tmp.y),new Point(tmp.x-1,tmp.y-1));
+
+                    deque.remove(points[(int) tmp.x][(int) tmp.y-1]);
+                    compteur++;
+
+
+                }
+            }
+
+        }
         LatexConstructor.createHeighFunctionVisu(points,hauteur,largeur);
+        LatexConstructor.createLatex(doms,hauteur,largeur);
 
     }
 

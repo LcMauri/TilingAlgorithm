@@ -22,40 +22,36 @@ public class LatexConstructor {
                     "\\begin{document}\n" +
                     "\\begin{tikzpicture}[scale="+scale+"]\n");
 
-
-
-            latex.write("\\draw (0,0) -- ("+hauteur+",0) ;\n" +
-                    "\\draw (0,0) -- (0,"+largeur+") ; \n");
-            for(int i=1; i<=hauteur;i++){
-                for(int y=1; y<=largeur;y++){
+            for(int i=-1; i<=largeur+2;i++){
+                for(int y=-1; y<=hauteur+2;y++){
                     if((Math.abs(y)+Math.abs(i))%2==1){
                         latex.write("\\draw [draw=black, fill=white, opacity=0.5] ("+(i-1)+","+(y-1)+") rectangle ("+i+","+y+");\n");
                     }else{
-                        latex.write("\\draw [draw=black, fill=blue, opacity=0.5] ("+(i-1)+","+(y-1)+") rectangle ("+i+","+y+");\n");
+                        latex.write("\\draw [draw=black, fill=blue, opacity=0.5] ("+(i-1)+","+(y-1)+")  rectangle ("+i+","+y+");\n");
                     }
                 }
             }
 
-            for(int i=0;i>doms.length;i++){
+            for(int i=0;i<doms.length;i++){
                 String color="purple";
-
-                if(Math.abs(doms[i].points[0].x-doms[i].points[1].x)>1){
-                    if((doms[i].points[0].x+doms[i].points[0].y)%2==0){
-                        if(doms[i].points[0].x<doms[i].points[1].x){
-                            color="red";
+                if(doms[i]!=null){
+                    if(Math.abs(doms[i].points[0].x-doms[i].points[1].x)>1){
+                        if((doms[i].points[0].x+doms[i].points[0].y)%2==0){
+                            if(doms[i].points[0].x<doms[i].points[1].x){
+                                color="red";
+                            }else{
+                                color="blue";
+                            }
                         }else{
-                            color="blue";
+                            if(doms[i].points[0].x<doms[i].points[1].x){
+                                color="blue";
+                            }else{
+                                color="red";
+                            }
                         }
-                    }else{
-                        if(doms[i].points[0].x<doms[i].points[1].x){
-                            color="blue";
-                        }else{
-                            color="red";
-                        }
-                    }
 
 
-                }else  if(Math.abs(doms[i].points[0].y-doms[i].points[1].y)>1){
+                    }else  if(Math.abs(doms[i].points[0].y-doms[i].points[1].y)>1){
                         if((doms[i].points[0].x+doms[i].points[0].y)%2==0){
                             if(doms[i].points[0].y<doms[i].points[1].y){
                                 color="green";
@@ -69,9 +65,9 @@ public class LatexConstructor {
                                 color="green";
                             }
                         }
+                    }
+                    latex.write("\\draw [draw=black, fill="+color+", opacity=1] ("+doms[i].points[0].x+","+doms[i].points[0].y+") rectangle ("+doms[i].points[1].x+","+doms[i].points[1].y+");\n");
                 }
-
-                latex.write("\\draw [draw=black, fill="+color+", opacity=1] ("+doms[i].points[0].x+","+doms[i].points[0].y+") rectangle ("+doms[i].points[1].x+","+doms[i].points[1].y+");\n");
             }
 
             latex.write( "\\end{tikzpicture}");
@@ -86,7 +82,7 @@ public class LatexConstructor {
 
     public static void createHeighFunctionVisu(Point[][] points, float hauteur, float largeur){
         try {
-            FileWriter latex = new FileWriter("Results/pavage.latex");
+            FileWriter latex = new FileWriter("Results/fonctionHauteur.latex");
             String scale = "1";
             if(hauteur * largeur > 200 ){
                 scale = "0.5";
@@ -110,7 +106,7 @@ public class LatexConstructor {
 
             for(int i=0;i<=largeur;i++) {
                 for (int y = 0; y <=hauteur; y++) {
-                        latex.write("\\draw ("+i+","+y+") node[below,, xshift=0.2cm] {\\normalsize$"+points[i][y].getHauteur()+"$};\n");
+                        latex.write("\\draw ("+i+","+y+") node[below,, yshift=0.5cm,xshift=-0.1cm] {\\normalsize$"+points[i][y].getHauteur()+"$};\n");
                 }
             }
 

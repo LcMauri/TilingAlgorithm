@@ -13,10 +13,9 @@ public class Domino {
         this.points = points;
     }
 
-    public Domino(int height, Point point1,Point point2) {
+    public Domino(Point point1,Point point2) {
         this.points=new Point[2];
 
-        this.height = height;
 
         if(point1.x>point2.x||point1.y>point2.y ){
             this.points[0]=new Point();
