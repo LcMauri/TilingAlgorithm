@@ -1,3 +1,5 @@
+
+
 package com.example.tilingalgorithm;
 import java.io.File;  // Import the File class
 import java.io.IOException;  // Import the IOException class to handle errors
@@ -12,7 +14,7 @@ public class LatexConstructor {
             FileWriter latex = new FileWriter("Results/pavage.latex");
             String scale = "1";
             if(hauteur * largeur > 200 ){
-                 scale = "0.5";
+                scale = "0.5";
             }
             if(hauteur * largeur > 500 ){
                 scale = "0.2";
@@ -106,7 +108,7 @@ public class LatexConstructor {
 
             for(int i=0;i<=largeur;i++) {
                 for (int y = 0; y <=hauteur; y++) {
-                        latex.write("\\draw ("+i+","+y+") node[below,, yshift=0.5cm,xshift=-0.1cm] {\\normalsize$"+points[i][y].getHauteur()+"$};\n");
+                    latex.write("\\draw ("+i+","+y+") node[below,, yshift=0.5cm,xshift=-0.1cm] {\\normalsize$"+points[i][y].getHauteur()+"$};\n");
                 }
             }
 
@@ -121,3 +123,4 @@ public class LatexConstructor {
         }
     }
 }
+

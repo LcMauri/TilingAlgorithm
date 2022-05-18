@@ -85,14 +85,14 @@ public class main {
                             priorityQueue.add(points[(int) voisin[i].x][(int) voisin[i].y]);
 
 
-                         if((int) voisin[i].x==0){
+                            if((int) voisin[i].x==0){
 
                                 points[nbPointLargueur-1][(int) voisin[i].y].setHauteur(points[(int) voisin[i].x][(int) voisin[i].y].hauteur);
                                 points[nbPointLargueur-1][(int) voisin[i].y].setModif(true);
                                 priorityQueue.add(points[nbPointLargueur-1][(int) voisin[i].y]);
 
                             }
-                         if((int) voisin[i].y==0){
+                            if((int) voisin[i].y==0){
                                 points[(int) voisin[i].x][nbPointHauteur-1].setHauteur(points[(int) voisin[i].x][(int) voisin[i].y].hauteur);
                                 points[(int) voisin[i].x][nbPointHauteur-1].setModif(true);
                                 priorityQueue.add(points[(int) voisin[i].x][nbPointHauteur-1]);
