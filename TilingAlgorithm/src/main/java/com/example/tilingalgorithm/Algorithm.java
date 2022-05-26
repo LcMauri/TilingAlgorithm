@@ -72,8 +72,8 @@ public class Algorithm {
         }
 
         doms=creationTableauDomino(points,nbPointHauteur,nbPointLargueur,determinent);
-        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"Results/Max/functionMax.latex");
-        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"Results/Max/pavageMax.latex");
+        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"TilingAlgorithm/TilingAlgorithm/Results/Max/functionMax.latex");
+        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"TilingAlgorithm/TilingAlgorithm/Results/Max/pavageMax.latex");
         return true;
     }
 
@@ -143,8 +143,121 @@ public class Algorithm {
         }
 
         doms=creationTableauDomino(points,nbPointHauteur,nbPointLargueur,determinent);
-        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"Results/Min/functionHMin.latex");
-        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"Results/Min/pavageMin.latex");
+        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"TilingAlgorithm/TilingAlgorithm/Results/Min/functionHMin.latex");
+        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"TilingAlgorithm/TilingAlgorithm/Results/Min/pavageMin.latex");
+        return true;
+    }
+
+    public static boolean pavageMaximumCalculDistance (Vector2 horizontal, Vector2 vertical, int poidHorizontal, int poidVertical, boolean affichageGrille){
+        int determinent= Math.abs((int) vertical.determinent(vertical,horizontal));
+
+        Algorithm.checkPreCondition(horizontal,vertical,poidHorizontal,poidVertical,determinent);
+        float hauteur =vertical.y;
+        float largeur=horizontal.x;
+        int nbPointLargueur=(int) largeur+1;
+        int nbPointHauteur=(int) hauteur+1;
+        PriorityQueue<Point> priorityQueue = new PriorityQueue<>(nbPointLargueur*nbPointHauteur,new PointComparatorSuperior());
+
+
+        Domino[] doms;
+        Point[][] points= new Point[nbPointLargueur][nbPointHauteur];
+
+
+
+        Point[] pointInvariant = new Point[4];
+
+
+
+        pointInvariant[1]=new Point(horizontal.x,horizontal.y,poidHorizontal);
+        pointInvariant[2]=new Point(vertical.x,vertical.y,poidVertical);
+        pointInvariant[3]=new Point(horizontal.x+vertical.x,vertical.y+horizontal.y,poidHorizontal+poidVertical);
+        pointInvariant[0]=new Point(0,0,0);
+
+
+
+
+
+
+        int hauteurPoint;
+        for(int i=0;i<nbPointLargueur;i++){
+            for(int y=0;y<nbPointHauteur;y++){
+                hauteurPoint=Integer.MAX_VALUE;
+                for(int c=0; c<pointInvariant.length;c++){
+                        if(hauteurPoint>distMax(pointInvariant[c],new Point(i,y))){
+                            hauteurPoint=distMax(pointInvariant[c],new Point(i,y));
+                        }
+                }
+
+                points[i][y]=new Point(i,y,hauteurPoint);
+            }
+        }
+
+
+        doms=creationTableauDomino(points,nbPointHauteur,nbPointLargueur,determinent);
+        if(!checkPavageBordure(points, nbPointHauteur, nbPointLargueur)){
+            System.out.println("problème de poids");
+            return false;
+        }
+        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"TilingAlgorithm/TilingAlgorithm/Results/Max/pavage.latex");
+        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"TilingAlgorithm/TilingAlgorithm/Results/Max/function.latex");
+
+        //TODO CHECK l'histoire du diamand pour avoir la distance max.
+        //TODO CHECK avec ta formule de distance que OUI c'est possible que un point d'autre rectangle soit plus proche que celui d'origine + voir combien il en faut pour être sur que tout est bon
+        return true;
+    }
+
+
+    public static boolean pavageMinimumCalculDistance (Vector2 horizontal, Vector2 vertical, int poidHorizontal, int poidVertical, boolean affichageGrille){
+        int determinent= Math.abs((int) vertical.determinent(vertical,horizontal));
+
+        Algorithm.checkPreCondition(horizontal,vertical,poidHorizontal,poidVertical,determinent);
+        float hauteur =vertical.y;
+        float largeur=horizontal.x;
+        int nbPointLargueur=(int) largeur+1;
+        int nbPointHauteur=(int) hauteur+1;
+        PriorityQueue<Point> priorityQueue = new PriorityQueue<>(nbPointLargueur*nbPointHauteur,new PointComparatorSuperior());
+
+
+        Domino[] doms;
+        Point[][] points= new Point[nbPointLargueur][nbPointHauteur];
+
+
+
+        Point[] pointInvariant = new Point[4];
+
+
+
+        pointInvariant[1]=new Point(horizontal.x,horizontal.y,poidHorizontal);
+        pointInvariant[2]=new Point(vertical.x,vertical.y,poidVertical);
+        pointInvariant[3]=new Point(horizontal.x+vertical.x,vertical.y+horizontal.y,poidHorizontal+poidVertical);
+        pointInvariant[0]=new Point(0,0,0);
+
+
+        int hauteurPoint;
+        for(int i=0;i<nbPointLargueur;i++){
+            for(int y=0;y<nbPointHauteur;y++){
+                hauteurPoint=Integer.MAX_VALUE;
+                for(int c=0; c<pointInvariant.length;c++){
+                    if(hauteurPoint>distMin(pointInvariant[c],new Point(i,y))){
+                        hauteurPoint=distMin(pointInvariant[c],new Point(i,y));
+                    }
+                }
+
+                points[i][y]=new Point(i,y,hauteurPoint);
+            }
+        }
+
+
+        doms=creationTableauDomino(points,nbPointHauteur,nbPointLargueur,determinent);
+        if(!checkPavageBordure(points, nbPointHauteur, nbPointLargueur)){
+            System.out.println("problème de poids");
+            return false;
+        }
+        LatexConstructor.createLatex(doms,nbPointHauteur,nbPointLargueur,affichageGrille,"TilingAlgorithm/TilingAlgorithm/Results/Min/pavage.latex");
+        LatexConstructor.createHeighFunctionVisu(points,nbPointHauteur,nbPointLargueur,"TilingAlgorithm/TilingAlgorithm/Results/Min/hauteur.latex");
+
+        //TODO CHECK l'histoire du diamand pour avoir la distance max.
+        //TODO CHECK avec ta formule de distance que OUI c'est possible que un point d'autre rectangle soit plus proche que celui d'origine + voir combien il en faut pour être sur que tout est bon
         return true;
     }
 
@@ -286,6 +399,8 @@ public class Algorithm {
 
     private static boolean checkPreCondition(Vector2 horizontal, Vector2 vertical, int poidHorizontal,int poidVertical, int determinent){
 
+
+
         if(vertical.determinent(vertical,horizontal)%2!=0){
             System.out.println("impavable car air est impair");
            return false;
@@ -340,6 +455,7 @@ public class Algorithm {
 
     private static boolean checkPavageBordure(Point[][] points,int nbPointHauteur, int nbPointLargueur){
         for(int i=0;i<nbPointLargueur-1;i++){
+
             if(points[i][0].hauteur-points[i+1][0].hauteur!=points[i][nbPointHauteur-1].hauteur-points[i+1][nbPointHauteur-1].hauteur){
                 return false;
             }
@@ -350,5 +466,43 @@ public class Algorithm {
             }
         }
         return true;
+    }
+
+    private static int distMax(Point p1, Point p2){
+            int paritéP1=Math.abs(((int) p1.x+(int) p1.y)%2);
+            int paritéP2=Math.abs(((int) p2.x+(int) p2.y)%2);
+
+            if(paritéP1!=paritéP2){
+                if(paritéP1==0){
+                    return Integer.min(distMax(new Point(p1.x+1,p1.y,p1.hauteur+1),new Point(p2.x,p2.y,p2.hauteur)),distMax(new Point(p1.x-1,p1.y,p1.hauteur+1),new Point(p2.x,p2.y,p2.hauteur)));
+                }
+            }
+            int x=Math.abs((int) p1.x-(int )p2.x);
+            int y=Math.abs((int) p1.y-(int )p2.y);
+
+            if(x<0&&y<0){
+                x=Math.abs(x);
+                y=Math.abs(y);
+            }
+            return p1.hauteur+(Math.abs(x+y )+2*(Integer.max(x,y)-(Math.abs(x+y)/2)));
+    }
+
+
+    private static int distMin(Point p1, Point p2){
+        int paritéP1=Math.abs(((int) p1.x+(int) p1.y)%2);
+        int paritéP2=Math.abs(((int) p2.x+(int) p2.y)%2);
+        if(paritéP1!=paritéP2){
+            if(paritéP1==0){
+                return Integer.min(distMin(new Point(p1.x,p1.y+1,p1.hauteur+1),new Point(p2.x,p2.y,p2.hauteur)),distMin(new Point(p1.x,p1.y-1,p1.hauteur+1),new Point(p2.x,p2.y,p2.hauteur)));
+            }
+        }
+        int x=Math.abs((int) p1.x-(int )p2.x);
+        int y=Math.abs((int) p1.y-(int )p2.y);
+
+        if(x<0&&y<0){
+            x=Math.abs(x);
+            y=Math.abs(y);
+        }
+        return  p1.hauteur+(Math.abs(x+y )+2*(Integer.max(x,y)-(Math.abs(x+y)/2)));
     }
 }
